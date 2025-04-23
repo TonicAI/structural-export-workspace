@@ -38,7 +38,7 @@ runs:
         # Run curl to export workspace configuration
         curl --fail --silent --show-error \
           -X GET "${{ inputs.base-url }}/api/workspace/${{ inputs.workspace-id }}/export" \
-          -H "Authorization: Bearer ${{ inputs.api-key }}" \
+          -H "Authorization: APIKEY ${{ inputs.api-key }}" \
           -H "Content-Type: application/json" \
           -o "${{ inputs.output-path }}"
 
