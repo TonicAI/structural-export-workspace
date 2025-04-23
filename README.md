@@ -1,25 +1,44 @@
-# Tonic Structural Workspace Export
+# Export Workspace Configuration
 
-A GitHub Action to export the configuration stored in your Tonic Structural workspace.
+This action exports the configuration stored in your Tonic Structural workspace.
 
-## Usage
+## Inputs
 
-This action allows you to export your Tonic Structural workspace configuration via the Tonic API. The export can be triggered manually or scheduled to run automatically.
+- `api-key` (required): Structural API key with access to the workspace
+- `workspace-id` (required): ID of the Structural workspace to export
+- `base-url` (optional): Base URL for Structural API, defaults to 'https://app.tonic.ai'
+- `output-path` (optional): Path where the export file will be saved, defaults to 'workspace-export.json'
 
-### Example Workflow
+## Outputs
+
+- `export-path`: Path to the exported workspace configuration file
+
+## Example Usage
+
+### Basic Usage
 
 ```yaml
-name: Export Tonic Workspace
+steps:
+  - name: Export Structural workspace
+    id: export
+    uses: TonicAI/structural-export-workspace@v1
+    with:
+      api-key: ${{ secrets.STRUCTURAL_API_KEY }}
+      workspace-id: ${{ vars.STRUCTURAL_WORKSPACE_ID }}
+```
+
+### Complete Workflow Example
+
+```yaml
+name: Export Structural Workspace
 
 on:
   workflow_dispatch:
     inputs:
       workspace-id:
-        description: 'ID of the Tonic workspace to export'
+        description: 'ID of the Structural workspace to export'
         required: true
         type: string
-  schedule:
-    - cron: '0 0 * * 1'  # Every Monday at midnight
 
 jobs:
   export:
@@ -28,20 +47,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Create timestamp for files
       - name: Set timestamp
         id: timestamp
         run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
-      - name: Export Tonic workspace
+      - name: Export Structural workspace
         id: export
-        uses: tonic-ai/structural-export-workspace@v1
+        uses: TonicAI/structural-export-workspace@v1
         with:
-          api-key: ${{ secrets.TONIC_API_KEY }}
-          workspace-id: ${{ github.event.inputs.workspace-id || secrets.TONIC_WORKSPACE_ID }}
+          api-key: ${{ secrets.STRUCTURAL_API_KEY }}
+          workspace-id: ${{ github.event.inputs.workspace-id }}
           output-path: "./exports/workspace-config.json"
 
-      # Create a timestamped copy
       - name: Create timestamped copy
         run: |
           cp "${{ steps.export.outputs.export-path }}" "./exports/workspace-config-${{ steps.timestamp.outputs.timestamp }}.json"
@@ -55,25 +72,6 @@ jobs:
           git push
 ```
 
-## Inputs
-
-| Input | Description | Required | Default |
-|-------|-------------|----------|---------|
-| `api-key` | Tonic API key with access to the workspace | Yes | |
-| `workspace-id` | ID of the Tonic workspace to export | Yes | |
-| `base-url` | Base URL for Tonic API | No | `https://app.tonic.ai` |
-| `output-path` | Path where the export file will be saved | No | `workspace-export.json` |
-
-## Outputs
-
-| Output | Description |
-|--------|-------------|
-| `export-path` | Path to the exported workspace configuration file |
-
 ## Security
 
-This action requires a Tonic API key with permissions to export the workspace configuration. Store this key as a secret in your GitHub repository and reference it as shown in the example workflow.
-
-## License
-
-This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
+This action requires a Structural API key with permissions to export the workspace configuration. Store this key as a secret in your GitHub repository and reference it as shown in the example workflow.

@@ -36,7 +36,7 @@ runs:
         mkdir -p "$(dirname "${{ inputs.output-path }}")"
 
         # Run curl to export workspace configuration
-        curl -s -X \
+        curl --fail --silent --show-error \
           -X GET "${{ inputs.base-url }}/api/workspace/${{ inputs.workspace-id }}/export" \
           -H "Authorization: Bearer ${{ inputs.api-key }}" \
           -H "Content-Type: application/json" \
