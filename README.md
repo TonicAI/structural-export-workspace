@@ -4,14 +4,14 @@ This action exports the configuration stored in your Tonic Structural workspace.
 
 ## Inputs
 
-- `api-key` (required): Structural API key with access to the workspace
-- `workspace-id` (required): ID of the Structural workspace to export
+- `api_key` (required): Structural API key with access to the workspace
+- `workspace_id` (required): ID of the Structural workspace to export
 - `base-url` (optional): Base URL for Structural API, defaults to 'https://app.tonic.ai'
-- `output-path` (optional): Path where the export file will be saved, defaults to 'workspace-export.json'
+- `output_path` (optional): Path where the export file will be saved, defaults to 'workspace-export.json'
 
 ## Outputs
 
-- `export-path`: Path to the exported workspace configuration file
+- `export_path`: Path to the exported workspace configuration file
 
 ## Example Usage
 
@@ -23,8 +23,8 @@ steps:
     id: export
     uses: TonicAI/structural-export-workspace@v1
     with:
-      api-key: ${{ secrets.STRUCTURAL_API_KEY }}
-      workspace-id: ${{ vars.STRUCTURAL_WORKSPACE_ID }}
+      api_key: ${{ secrets.STRUCTURAL_API_KEY }}
+      workspace_id: ${{ vars.STRUCTURAL_WORKSPACE_ID }}
 ```
 
 ### Complete Workflow Example
@@ -35,7 +35,7 @@ name: Export Structural Workspace
 on:
   workflow_dispatch:
     inputs:
-      workspace-id:
+      workspace_id:
         description: 'ID of the Structural workspace to export'
         required: true
         type: string
@@ -55,13 +55,13 @@ jobs:
         id: export
         uses: TonicAI/structural-export-workspace@v1
         with:
-          api-key: ${{ secrets.STRUCTURAL_API_KEY }}
-          workspace-id: ${{ github.event.inputs.workspace-id }}
-          output-path: "./exports/workspace-config.json"
+          api_key: ${{ secrets.STRUCTURAL_API_KEY }}
+          workspace_id: ${{ github.event.inputs.workspace_id }}
+          output_path: "./exports/workspace-config.json"
 
       - name: Create timestamped copy
         run: |
-          cp "${{ steps.export.outputs.export-path }}" "./exports/workspace-config-${{ steps.timestamp.outputs.timestamp }}.json"
+          cp "${{ steps.export.outputs.export_path }}" "./exports/workspace-config-${{ steps.timestamp.outputs.timestamp }}.json"
 
       - name: Commit changes
         run: |

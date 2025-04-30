@@ -5,25 +5,25 @@ branding:
   icon: "upload"
   color: "blue"
 inputs:
-  api-key:
+  api_key:
     description: 'Structural API key with access to the workspace'
     required: true
-  workspace-id:
+  workspace_id:
     description: 'ID of the Tonic workspace to export'
     required: true
   base-url:
     description: 'Base URL for Tonic API'
     required: false
     default: 'https://app.tonic.ai'
-  output-path:
+  output_path:
     description: 'Path where the export file will be saved'
     required: false
     default: 'workspace-export.json'
 
 outputs:
-  export-path:
+  export_path:
     description: 'Path to the exported workspace configuration file'
-    value: ${{ steps.export.outputs.export-path }}
+    value: ${{ steps.export.outputs.export_path }}
 
 runs:
   using: 'composite'
@@ -33,19 +33,19 @@ runs:
       shell: bash
       run: |
         # Create output directory if it doesn't exist
-        mkdir -p "$(dirname "${{ inputs.output-path }}")"
+        mkdir -p "$(dirname "${{ inputs.output_path }}")"
 
         # Run curl to export workspace configuration
         curl --fail --silent --show-error \
-          -X GET "${{ inputs.base-url }}/api/workspace/${{ inputs.workspace-id }}/export" \
-          -H "Authorization: APIKEY ${{ inputs.api-key }}" \
+          -X GET "${{ inputs.base-url }}/api/workspace/${{ inputs.workspace_id }}/export" \
+          -H "Authorization: APIKEY ${{ inputs.api_key }}" \
           -H "Content-Type: application/json" \
-          -o "${{ inputs.output-path }}"
+          -o "${{ inputs.output_path }}"
 
         # Check if export was successful
         if [ $? -eq 0 ]; then
-          echo "Workspace configuration successfully exported to ${{ inputs.output-path }}"
-          echo "export-path=${{ inputs.output-path }}" >> $GITHUB_OUTPUT
+          echo "Workspace configuration successfully exported to ${{ inputs.output_path }}"
+          echo "export_path=${{ inputs.output_path }}" >> $GITHUB_OUTPUT
         else
           echo "Failed to export workspace configuration"
           exit 1
